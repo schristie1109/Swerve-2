@@ -89,7 +89,7 @@ public class Robot extends TimedRobot {
         /* Two examples of an autonomous path are included in this program */
         double time = timer.get();
 
-        // {+X, +Y, ->R}
+        // {+X, +Y, +Z}
         double[] driveArray = {0, 0, 0};
         _drive.run(driveArray);
 
@@ -110,7 +110,9 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopInit() {}
+    public void teleopInit() {
+        _drive.stop();
+    }
 
     @Override
     public void teleopPeriodic() {
