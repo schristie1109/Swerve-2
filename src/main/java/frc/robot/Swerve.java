@@ -107,6 +107,14 @@ public class Swerve {
         return odometry.getPoseMeters().getRotation();
     }
 
+    public double getPoseX() {
+        return odometry.getPoseMeters().getX();
+    }
+
+    public double getPoseY() {
+        return odometry.getPoseMeters().getY();
+    }
+
     public void drive(ChassisSpeeds chassisSpeeds) {
         this.chassisSpeeds = chassisSpeeds;
     }

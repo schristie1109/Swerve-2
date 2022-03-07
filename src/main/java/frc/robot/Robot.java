@@ -96,17 +96,11 @@ public class Robot extends TimedRobot {
         if (time < 8) {
             driveArray[1] = -0.5;
         }
-
-        /*
-
-        if (time < 8) {
-            _drive.run(0, -0.5, 0);
+        
+        // Pathfinding Example
+        if (time > 0 && time < 3) {
+            _drive.pathFinder(_swerve.getPoseX(), _swerve.getPoseY(), getGyroscope(), 0, 15, 0.0, 0.6);
         }
-        else {
-            _drive.stop();
-        }
-
-        */
     }
 
     @Override
