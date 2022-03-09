@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
             config.rotationScaleFactorY = 0.0;
             config.translationScaleFactor = 0.00748;
             _navpod.setConfig(config);
-
+            
             // Report values to the console
             config = _navpod.getConfig();
             System.err.printf("config.cableMountAngle: %f\n", config.cableMountAngle);
@@ -62,15 +62,12 @@ public class Robot extends TimedRobot {
             System.err.printf("config.rotationScaleFactorX: %f\n", config.rotationScaleFactorX);
             System.err.printf("config.rotationScaleFactorY: %f\n", config.rotationScaleFactorY);
             System.err.printf("config.translationScaleFactor: %f\n", config.translationScaleFactor);
-
+            
             _navpod.resetH(0);
             _navpod.resetXY(0, 0);
 
             // Update console with NavPod info every 10ms
             _navpod.setAutoUpdate(0.10, update -> heading = (double) update.h);
-
-            // Debug command to setup NavPod
-            // _navpod.setAutoUpdate(0.10, update -> System.err.printf("h: %f, x: %f, sx: %f, y: %f, ys: %f\n", update.h, update.x, update.sx, update.y, update.sy));
         }
     }
 
@@ -80,7 +77,7 @@ public class Robot extends TimedRobot {
         tab.addBoolean("NavPod Status", () -> _navpod.isValid());
         tab.addNumber("NavPod Heading", () -> heading);
     }
-    
+
     @Override
     public void autonomousInit() { timer.reset(); }
 
@@ -99,7 +96,13 @@ public class Robot extends TimedRobot {
         
         // Pathfinding Example
         if (time > 0 && time < 3) {
-            _drive.pathFinder(_swerve.getPoseX(), _swerve.getPoseY(), getGyroscope(), 0, 15, 0.0, 0.6);
+            _drive.pathFinder(_swerve.getPoseX(), _swerve.getPoseY(), getGyroscope(), 0, 5, 0.0, 0.6);
+        }
+        else if (time > 3 && time < 6) {
+            _drive.pathFinder(_swerve.getPoseX(), _swerve.getPoseY(), getGyroscope(), 5, 5, 0.0, 0.6);
+        }
+        else {
+            _drive.stop();
         }
     }
 
@@ -107,7 +110,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         _drive.stop();
     }
-
+    
     @Override
     public void teleopPeriodic() {
         // Run Swerve Code
@@ -117,10 +120,16 @@ public class Robot extends TimedRobot {
         _drive.teleopPeriodic(true);
     }
 
-    @Override
+    @Override  
     public void disabledInit() {
         // Stop Drivetrain
         _drive.stop();
+    }
+
+    @Override
+    public void testPeriodic() {
+        // Display NavPod information to the console
+        _navpod.setAutoUpdate(0.10, update -> System.err.printf("h: %f, x: %f, sx: %f, y: %f, ys: %f\n", update.h, update.x, update.sx, update.y, update.sy));
     }
 
     // Get Gyroscope heading

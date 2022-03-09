@@ -89,6 +89,7 @@ public class Drive {
         return deadband(Math.copySign(value * value, value), 0.1);
     }
 
+    // Pathfinding calculations
     public double[] pathFinder(double currentX, double currentY, double currentAngle, double x, double y,
             double targetAngle,
             double maxSpeed) {
