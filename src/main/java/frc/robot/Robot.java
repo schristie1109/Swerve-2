@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
     NavPod _navpod;
     Drive _drive;
     Swerve _swerve;
-    
+
     /* This function is run when the robot is first started up and should be used for any
     initialization code. */
     @Override
@@ -62,7 +62,7 @@ public class Robot extends TimedRobot {
             System.err.printf("config.rotationScaleFactorX: %f\n", config.rotationScaleFactorX);
             System.err.printf("config.rotationScaleFactorY: %f\n", config.rotationScaleFactorY);
             System.err.printf("config.translationScaleFactor: %f\n", config.translationScaleFactor);
-            
+
             _navpod.resetH(0);
             _navpod.resetXY(0, 0);
 
@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
             _navpod.setAutoUpdate(0.10, update -> heading = (double) update.h);
         }
     }
-    
+
     @Override
     public void robotPeriodic() {
         // Display Shuffleboard Info
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
         /* Two examples of an autonomous path are included in this program */
         double time = timer.get();
 
-        // {+X, +Y, +Z}
+        // Default Example
         double[] driveArray = {0, 0, 0};
         _drive.run(driveArray);
 
