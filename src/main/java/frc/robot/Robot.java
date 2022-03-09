@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
     NavPod _navpod;
     Drive _drive;
     Swerve _swerve;
-
+    
     /* This function is run when the robot is first started up and should be used for any
     initialization code. */
     @Override
@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
             _navpod.setAutoUpdate(0.10, update -> heading = (double) update.h);
         }
     }
-
+    
     @Override
     public void robotPeriodic() {
         // Display Shuffleboard Info
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         _drive.stop();
     }
-    
+
     @Override
     public void teleopPeriodic() {
         // Run Swerve Code
