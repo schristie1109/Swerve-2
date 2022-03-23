@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import static frc.robot.util.Constants.*;
 
 public class Swerve {
-    Robot _robot = new Robot();
+    private Robot robot;
 
     private static final double MAX_VOLTAGE = 12.0;
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
@@ -40,11 +40,13 @@ public class Swerve {
             new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(_robot.getGyroscope()));
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(robot.getGyroscope()));
 
     private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-    public Swerve() {
+    public Swerve(Robot robot) {
+        this.robot = robot;
+
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
         frontLeftModule = Mk3SwerveModuleHelper.createNeo(
@@ -91,7 +93,7 @@ public class Swerve {
             BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        tab.addNumber("Gyroscope Angle", () -> _robot.getGyroscope());
+        tab.addNumber("Gyroscope Angle", () -> robot.getGyroscope());
         tab.addNumber("Pose X", () -> odometry.getPoseMeters().getX());
         tab.addNumber("Pose Y", () -> odometry.getPoseMeters().getY());
     }
@@ -99,7 +101,7 @@ public class Swerve {
     public void zeroGyroscope() {
         odometry.resetPosition(
                 new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)),
-                Rotation2d.fromDegrees(_robot.getGyroscope())
+                Rotation2d.fromDegrees(robot.getGyroscope())
         );
     }
 
@@ -120,7 +122,7 @@ public class Swerve {
     }
     
     public void teleopPeriodic() {
-        odometry.update(Rotation2d.fromDegrees(_robot.getGyroscope()),
+        odometry.update(Rotation2d.fromDegrees(robot.getGyroscope()),
             new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle())),
             new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle())),
             new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle())),
@@ -140,5 +142,5 @@ public class Swerve {
         frontRightModule.set(0, 45 * (Math.PI / 180));
         backLeftModule.set(0, 45 * (Math.PI / 180));
         backRightModule.set(0, 315 * (Math.PI / 180));
-      }
+    }
 }

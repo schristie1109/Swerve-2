@@ -35,8 +35,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         _navpod = new NavPod();
-        _drive = new Drive();
-        _swerve = new Swerve();
+        _drive = new Drive(this);
 
         // Check if the NavPod is connected to RoboRIO
         if (_navpod.isValid())
@@ -67,7 +66,7 @@ public class Robot extends TimedRobot {
             _navpod.resetXY(0, 0);
 
             // Update console with NavPod info every 10ms
-            _navpod.setAutoUpdate(0.10, update -> heading = (double) update.h);
+            _navpod.setAutoUpdate(0.02, update -> heading = (double) update.h);
         }
     }
 
@@ -83,15 +82,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        /* Two examples of an autonomous path are included in this program */
+        /* An example of an autonomous path is included within this program. */
         double time = timer.get();
 
-        // Default Example
-        double[] driveArray = {0, 0, 0};
-        _drive.run(driveArray);
-
         if (time < 3) {
-            driveArray[1] = -0.5;
+            _drive.run(0, -0.5, 0);
+        }
+        else {
+            _drive.stop();
         }
     }
 
@@ -102,11 +100,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        // Run Swerve Code
         _swerve.teleopPeriodic();
-
-        // Run Drivetrain
-        _drive.teleopPeriodic(true);
+        _drive.teleopPeriodic();
     }
 
     @Override  
@@ -118,7 +113,7 @@ public class Robot extends TimedRobot {
     @Override
     public void testPeriodic() {
         // Display NavPod information to the console
-        _navpod.setAutoUpdate(0.10, update -> System.err.printf("h: %f, x: %f, sx: %f, y: %f, ys: %f\n", update.h, update.x, update.sx, update.y, update.sy));
+        _navpod.setAutoUpdate(0.2, update -> System.err.printf("h: %f, x: %f, sx: %f, y: %f, ys: %f\n", update.h, update.x, update.sx, update.y, update.sy));
     }
 
     // Get Gyroscope heading
