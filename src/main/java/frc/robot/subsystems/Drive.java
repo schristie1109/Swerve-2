@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Swerve;
+import frc.robot.util.Utilities;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -60,19 +61,7 @@ public class Drive {
                         drivetrain.getRotation()));
     }
 
-    private static double deadband(double value, double deadband) {
-        if (Math.abs(value) > deadband) {
-            if (value > 0.0) {
-                return (value - deadband) / (1.0 - deadband);
-            } else {
-                return (value + deadband) / (1.0 - deadband);
-            }
-        } else {
-            return 0.0;
-        }
-    }
-
     private static double modifyAxis(double value) {
-        return deadband(Math.copySign(value * value, value), 0.1);
+        return Utilities.deadband(Math.copySign(value * value, value));
     }
 }
