@@ -35,7 +35,6 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         _navpod = new NavPod();
-        _drive = new Drive(this);
     }
 
     @Override

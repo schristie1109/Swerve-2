@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import frc.robot.Swerve;
-import frc.robot.Robot;
-
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.XboxController;
 
@@ -18,7 +16,7 @@ public class Drive {
     double rotationSupplier = _driver.getLeftX();
 
     private Swerve drivetrain;
-    public Drive(Robot robot) {
+    public Drive() {
 
         drivetrain = new Swerve();
     }
