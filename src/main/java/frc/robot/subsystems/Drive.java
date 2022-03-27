@@ -20,7 +20,7 @@ public class Drive {
     private Swerve drivetrain;
     public Drive(Robot robot) {
 
-        drivetrain = new Swerve(robot);
+        drivetrain = new Swerve();
     }
 
     public void teleopPeriodic() {

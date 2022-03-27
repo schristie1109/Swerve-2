@@ -36,45 +36,10 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         _navpod = new NavPod();
         _drive = new Drive(this);
-
-        // Check if the NavPod is connected to RoboRIO
-        if (_navpod.isValid())
-        {
-            NavPodConfig config = new NavPodConfig();
-            config.cableMountAngle = 0;
-            config.fieldOrientedEnabled = false;
-            config.initialHeadingAngle = 90;
-            config.mountOffsetX = 0;
-            config.mountOffsetY = 0;
-            config.rotationScaleFactorX = 0.05;
-            config.rotationScaleFactorY = 0.0;
-            config.translationScaleFactor = 0.00748;
-            _navpod.setConfig(config);
-            
-            // Report values to the console
-            config = _navpod.getConfig();
-            System.err.printf("config.cableMountAngle: %f\n", config.cableMountAngle);
-            System.err.printf("config.fieldOrientedEnabled: %b\n", config.fieldOrientedEnabled);
-            System.err.printf("config.initialHeadingAngle: %f\n", config.initialHeadingAngle);
-            System.err.printf("config.mountOffsetX: %f in\n", config.mountOffsetX);
-            System.err.printf("config.mountOffsetY: %f in\n", config.mountOffsetY);
-            System.err.printf("config.rotationScaleFactorX: %f\n", config.rotationScaleFactorX);
-            System.err.printf("config.rotationScaleFactorY: %f\n", config.rotationScaleFactorY);
-            System.err.printf("config.translationScaleFactor: %f\n", config.translationScaleFactor);
-
-            _navpod.resetH(0);
-            _navpod.resetXY(0, 0);
-
-            // Update console with NavPod info every 10ms
-            _navpod.setAutoUpdate(0.02, update -> heading = (double) update.h);
-        }
     }
 
     @Override
     public void robotPeriodic() {
-        // Display Shuffleboard Info
-        tab.addBoolean("NavPod Status", () -> _navpod.isValid());
-        tab.addNumber("NavPod Heading", () -> heading);
     }
 
     @Override

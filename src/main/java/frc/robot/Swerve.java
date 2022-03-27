@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import static frc.robot.util.Constants.*;
 
 public class Swerve {
-    private Robot robot;
+    private NavPod _navpod;
+
+    private double heading;
 
     private static final double MAX_VOLTAGE = 12.0;
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
@@ -40,12 +42,8 @@ public class Swerve {
             new Translation2d(-DRIVETRAIN_TRACKWIDTH_METERS / 2.0, -DRIVETRAIN_WHEELBASE_METERS / 2.0)
     );
 
-    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(robot.getGyroscope()));
-
-    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
-
-    public Swerve(Robot robot) {
-        this.robot = robot;
+    public Swerve() {
+        _navpod = new NavPod();
 
         ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
 
@@ -93,15 +91,53 @@ public class Swerve {
             BACK_RIGHT_MODULE_STEER_OFFSET
         );
 
-        tab.addNumber("Gyroscope Angle", () -> robot.getGyroscope());
+        // Check if the NavPod is connected to RoboRIO
+        if (_navpod.isValid())
+        {
+            NavPodConfig config = new NavPodConfig();
+            config.cableMountAngle = 0;
+            config.fieldOrientedEnabled = false;
+            config.initialHeadingAngle = 90;
+            config.mountOffsetX = 0;
+            config.mountOffsetY = 0;
+            config.rotationScaleFactorX = 0.05;
+            config.rotationScaleFactorY = 0.0;
+            config.translationScaleFactor = 0.00748;
+            _navpod.setConfig(config);
+            
+            // Report values to the console
+            config = _navpod.getConfig();
+            System.err.printf("config.cableMountAngle: %f\n", config.cableMountAngle);
+            System.err.printf("config.fieldOrientedEnabled: %b\n", config.fieldOrientedEnabled);
+            System.err.printf("config.initialHeadingAngle: %f\n", config.initialHeadingAngle);
+            System.err.printf("config.mountOffsetX: %f in\n", config.mountOffsetX);
+            System.err.printf("config.mountOffsetY: %f in\n", config.mountOffsetY);
+            System.err.printf("config.rotationScaleFactorX: %f\n", config.rotationScaleFactorX);
+            System.err.printf("config.rotationScaleFactorY: %f\n", config.rotationScaleFactorY);
+            System.err.printf("config.translationScaleFactor: %f\n", config.translationScaleFactor);
+
+            _navpod.resetH(0);
+            _navpod.resetXY(0, 0);
+
+            // Update console with NavPod info every 10ms
+            _navpod.setAutoUpdate(0.02, update -> heading = (double) update.h);
+        }
+
+        tab.addNumber("Gyroscope Angle", () -> heading);
         tab.addNumber("Pose X", () -> odometry.getPoseMeters().getX());
         tab.addNumber("Pose Y", () -> odometry.getPoseMeters().getY());
+        tab.addBoolean("NavPod Status", () -> _navpod.isValid());
+        tab.addNumber("NavPod Heading", () -> heading);
     }
+
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(kinematics, Rotation2d.fromDegrees(heading));
+
+    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
     public void zeroGyroscope() {
         odometry.resetPosition(
                 new Pose2d(odometry.getPoseMeters().getTranslation(), Rotation2d.fromDegrees(0.0)),
-                Rotation2d.fromDegrees(robot.getGyroscope())
+                Rotation2d.fromDegrees(heading)
         );
     }
 
@@ -122,7 +158,7 @@ public class Swerve {
     }
     
     public void teleopPeriodic() {
-        odometry.update(Rotation2d.fromDegrees(robot.getGyroscope()),
+        odometry.update(Rotation2d.fromDegrees(heading),
             new SwerveModuleState(frontLeftModule.getDriveVelocity(), new Rotation2d(frontLeftModule.getSteerAngle())),
             new SwerveModuleState(frontRightModule.getDriveVelocity(), new Rotation2d(frontRightModule.getSteerAngle())),
             new SwerveModuleState(backLeftModule.getDriveVelocity(), new Rotation2d(backLeftModule.getSteerAngle())),
