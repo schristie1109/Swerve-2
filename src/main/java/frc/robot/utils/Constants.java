@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.utils;
 
 public final class Constants {
     public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.4953;
